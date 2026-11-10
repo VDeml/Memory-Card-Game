@@ -30,8 +30,14 @@
 .card {
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-elevation-medium);
     min-height: 320px;
     min-width: 100px;
     border: 1px solid grey;
+    transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform:translateY(-2%);
+  box-shadow: var(--shadow-elevation-medium);
 }

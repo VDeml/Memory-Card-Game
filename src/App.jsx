@@ -1,4 +1,4 @@
-//import { useState, useEffect } from "react";
+import { useState } from "react";
 import './App.css'
 
 
@@ -20,36 +20,60 @@ import './App.css'
   cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/torchic"))
   cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/combusken"))
   cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/blaziken"))
+  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/treecko"))
+  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/grovyle"))
+  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/sceptile"))
 
-function Card({ pokemonName, spriteUrl}) {
+function Card({ pokemonName, spriteUrl, onClick, id}) {
   return (
-    <div className="card">
+    <button className="card" onClick={() => onClick(id)}>
       <h2>{pokemonName}</h2>
       <img src={spriteUrl}></img>
-    </div>
+    </button>
   )
 }
 
 
 export default function App() {
+  const numberOfCardsDisplayed = 2;
+  const [displayed, setDisplayed] = useState(shuffleDisplay(cardsArray).slice(0, numberOfCardsDisplayed))
+  const [alreadyClicked, setAlreadyClicked] = useState([])
+  const [highscore, setHighscore] = useState(0);
+
+  function shuffleDisplay(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array
+  }
+
+  function handleCardClick(id) {
+    const shuffledCopy = shuffleDisplay(cardsArray)
+    setDisplayed(shuffledCopy.slice(0, numberOfCardsDisplayed))
+    if(alreadyClicked.includes(id)) {
+      alert("Game over!")
+      setAlreadyClicked([])
+      if(alreadyClicked.length > highscore) setHighscore(alreadyClicked.length)
+    } else setAlreadyClicked([...alreadyClicked, id])
+    
+    
+  } 
+
+  
   return (
     <>
       <h1>Game grid below?</h1>
+      <h2>Score: {alreadyClicked.length}</h2>
+      <h2>Highscore: {highscore}</h2>
       <div className="gameGrid">
-        <Card 
-        pokemonName={firstCard.name}
-        spriteUrl={firstCard.sprites.versions["generation-viii"]["sword-shield"].front_default}
-        />
-
-        <Card 
-        pokemonName={secondCard.name}
-        spriteUrl={secondCard.sprites.versions["generation-viii"]["sword-shield"].front_default}
-        />
-        {cardsArray.map(card => 
+        {displayed.map(card => 
           <Card 
           key={card.id}
+          id={card.id}
           pokemonName={card.name}
           spriteUrl={card.sprites.versions["generation-iii"]["emerald"].front_default}
+          onClick={handleCardClick}
           />
         )}
       </div>
