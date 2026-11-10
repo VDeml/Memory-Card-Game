@@ -63,26 +63,27 @@ export default function App() {
     }
   } 
 
-  
   return (
     <>
-      <h1>Game grid below?</h1>
-      <h2>Score: {alreadyClicked.length}</h2>
-      <h2>Highscore: {highscore}</h2>
-      <div className="gameGrid">
-        {displayed.map(card => 
-          <Card 
-          key={card.id}
-          id={card.id}
-          pokemonName={card.name}
-          spriteUrl={card.sprites.versions["generation-ix"]["scarlet-violet"].front_default}
-          onClick={handleCardClick}
-          />
-        )}
-      </div>
-      
-    </>
-    
-    
+      <header>
+        <h1>Pokemon memory card game</h1>
+        <p>Click on each card only once and try to reach the highscore of 11!</p>
+        <h2>Score: {alreadyClicked.length}</h2>
+        <h2>Highscore: {highscore}</h2>
+      </header>
+      <main>
+        <div className="gameGrid">
+          {displayed.map(card => 
+            <Card 
+            key={card.id}
+            id={card.id}
+            pokemonName={card.name}
+            spriteUrl={card.sprites.versions["generation-ix"]["scarlet-violet"].front_default}
+            onClick={handleCardClick}
+            />
+          )}
+        </div>
+      </main>
+    </>    
   );
 }

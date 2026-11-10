@@ -20,8 +20,48 @@
   --background-main: #0891B2;
 }
 
+@font-face {
+    font-family:Playfair Display;
+    src: url(assets/fonts/PlayfairDisplay/PlayfairDisplay-VariableFont_wght.ttf);
+}
+@font-face {
+    font-family: Roboto;
+    src: url(assets/fonts/Roboto/Roboto-VariableFont_wdth\,wght.ttf);
+}
+
+body {
+    height: 100vh;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    background-color: #98deef;
+}
+
+h1, h2, h3 {
+    font-family: PlayfairDisplay, 'Times New Roman', Times, serif;
+}
+
+h1 {
+    font-size: 68px;
+}
+h2 {
+    font-size: 52px;
+}
+h3 {
+    font-size: 38px;
+}
+
+p {
+  font-size: 32px;
+}
+
+header {
+    padding: 4rem 2rem;
+}
+
+main {
+    padding: 4rem 2rem;
+}
+
 .gameGrid {
-  
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 3rem 2.5rem;
@@ -31,9 +71,7 @@
 .card {
     display: flex;
     flex-direction: column;
-    min-height: 320px;
-    min-width: 100px;
-    border: 1px solid grey;
+    border: 3px solid rgb(125, 125, 127);
     transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 }
 
