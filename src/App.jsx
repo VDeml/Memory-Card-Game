@@ -1,28 +1,8 @@
 import { useState } from "react";
+import { cardsArray } from './data.js'
 import './App.css'
 
 
-  async function newCall(fetchValue) {
-    try {
-      const response = await fetch(fetchValue)
-      const pokemonData = await response.json()
-      return pokemonData
-    } catch(error) {
-      console.error(error)
-    }
-  };
-
-  const firstCard = await newCall("https://pokeapi.co/api/v2/pokemon/ditto")
-  const secondCard = await newCall("https://pokeapi.co/api/v2/pokemon/machamp")
-  const cardsArray = [];
-  cardsArray.push(firstCard)
-  cardsArray.push(secondCard)
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/torchic"))
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/combusken"))
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/blaziken"))
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/treecko"))
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/grovyle"))
-  cardsArray.push(await newCall("https://pokeapi.co/api/v2/pokemon/sceptile"))
 
 function Card({ pokemonName, spriteUrl, onClick, id}) {
   return (
@@ -35,12 +15,13 @@ function Card({ pokemonName, spriteUrl, onClick, id}) {
 
 
 export default function App() {
-  const numberOfCardsDisplayed = 2;
-  const [displayed, setDisplayed] = useState(shuffleDisplay(cardsArray).slice(0, numberOfCardsDisplayed))
+  //MAGIC NUMBER dictates how many pokemon are shown to choose from
+  const numberOfCardsDisplayed = 4;
+  const [displayed, setDisplayed] = useState(shuffleArray(cardsArray).slice(0, numberOfCardsDisplayed))
   const [alreadyClicked, setAlreadyClicked] = useState([])
   const [highscore, setHighscore] = useState(0);
 
-  function shuffleDisplay(array) {
+  function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -48,16 +29,38 @@ export default function App() {
     return array
   }
 
+  
+
   function handleCardClick(id) {
-    const shuffledCopy = shuffleDisplay(cardsArray)
-    setDisplayed(shuffledCopy.slice(0, numberOfCardsDisplayed))
     if(alreadyClicked.includes(id)) {
       alert("Game over!")
       setAlreadyClicked([])
+      setDisplayed(shuffleArray(cardsArray).slice(0, numberOfCardsDisplayed))
       if(alreadyClicked.length > highscore) setHighscore(alreadyClicked.length)
-    } else setAlreadyClicked([...alreadyClicked, id])
-    
-    
+    } else if(alreadyClicked.length === (cardsArray.length - 1)) {
+        alert("Game Won!")
+        setHighscore(cardsArray.length)
+        setDisplayed(shuffleArray(cardsArray).slice(0, numberOfCardsDisplayed))
+        setAlreadyClicked([])
+    } else {
+      // create a new array of all of the clicked cards for calculating the new states
+      const newAlreadyClicked = [...alreadyClicked, id]
+      setAlreadyClicked(newAlreadyClicked)
+      console.log(newAlreadyClicked)
+
+      const shuffledUnClickedCards = shuffleArray(cardsArray.filter(card => !newAlreadyClicked.includes(card.id)))
+      const shuffledArray = shuffleArray(cardsArray)
+      // any cards, leaving one space to guarantee atleast one unclicked card will be displayed
+      const readyForShip = [shuffledUnClickedCards[0]]
+      let iteration = 0;
+      while(readyForShip.length < numberOfCardsDisplayed) {
+        if(!readyForShip.includes(shuffledArray[iteration])) {
+          readyForShip.push(shuffledArray[iteration])
+        }
+        iteration++
+      }
+      setDisplayed(shuffleArray(readyForShip))
+    }
   } 
 
   
@@ -72,7 +75,7 @@ export default function App() {
           key={card.id}
           id={card.id}
           pokemonName={card.name}
-          spriteUrl={card.sprites.versions["generation-iii"]["emerald"].front_default}
+          spriteUrl={card.sprites.versions["generation-ix"]["scarlet-violet"].front_default}
           onClick={handleCardClick}
           />
         )}
